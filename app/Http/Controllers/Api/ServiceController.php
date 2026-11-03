@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +14,11 @@ class ServiceController extends Controller
     {
         $services = Service::with('category')->get();
         return response()->json(['data' => $services]);
+    }
+
+    public function categories()
+    {
+        return response()->json(['data' => Category::all()]);
     }
 
     public function store(Request $request)

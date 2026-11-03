@@ -1,17 +1,32 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ServiceController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ComplaintController;
 
-Route::get('/services', [ServiceController::class, 'index']);
-Route::get('/services/{id}', [ServiceController::class, 'show']);
+// Public Routes (Auth)
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// Public Routes (Data Layanan)
+Route::get('/services', [ServiceController::class, 'index']);
+Route::get('/categories', [ServiceController::class, 'categories']);
+
+// Protected Routes (Sanctum Auth)
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/me', [AuthController::class, 'me']);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
     Route::post('/services', [ServiceController::class, 'store']);
-    Route::put('/services/{id}', [ServiceController::class, 'update']);
+    Route::post('/services/{id}', [ServiceController::class, 'update']);
     Route::delete('/services/{id}', [ServiceController::class, 'destroy']);
+});
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/complaints', [ComplaintController::class, 'index']);
+    Route::post('/complaints', [ComplaintController::class, 'store']);
 });
